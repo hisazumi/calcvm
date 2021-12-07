@@ -1,32 +1,65 @@
 
 package calcvm;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 
-@PageTitle("Empty")
-@Route(value = "empty")
+@PageTitle("Calc VM")
+@Route(value = "calcvm")
 @RouteAlias(value = "")
 
 public class CalcVMView extends VerticalLayout {
+    
     public CalcVMView() {
-        setSpacing(false);
+        // 中置記法入力
+        TextField infixExpr = new TextField();
+        infixExpr.setWidth("400px");
+        Button translateButton = new Button("変換");
+        Button generateButton = new Button("生成");
+        Button executeButton = new Button("実行");
 
-        Image img = new Image("images/empty-plant.png", "placeholder plant");
-        img.setWidth("200px");
-        add(img);
+        // 後置記法出力
+        Label postfixOut = new Label();
+        translateButton.addClickListener(e -> {
+            postfixOut.setText("1 2 + 3 *");
+        });
 
-        add(new H2("This place intentionally left empty"));
-        add(new Paragraph("It’s a place where you can grow your own UI 🤗"));
+        // スタックマシン命令列
+        VerticalLayout vmInsns = new VerticalLayout();
+        generateButton.addClickListener(e -> {
+            vmInsns.removeAll();
+            vmInsns.add(
+                new Label("push 1"),
+                new Label("push 2"),
+                new Label("add"),
+                new Label("push 3"),
+                new Label("mul"),
+                new Label("wrt"),
+                new Label("halt")
+            );
+        });
 
-        setSizeFull();
-        setJustifyContentMode(JustifyContentMode.CENTER);
-        setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        getStyle().set("text-align", "center");
+        // 実行結果
+        Label result = new Label();
+        executeButton.addClickListener(e -> {
+            result.setText("9");
+        });
+        
+        add(
+            new HorizontalLayout(infixExpr, translateButton, generateButton, executeButton),
+            new H2("後置記法"),
+            postfixOut,
+            new H2("スタックマシン命令列"),
+            vmInsns,
+            new H2("実行結果"),
+            result
+        );
     }
 }
